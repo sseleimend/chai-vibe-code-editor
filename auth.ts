@@ -43,7 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
       }
 
-      if (!newUser) return false;
+      if (!existingUser && !newUser) return false;
 
       let existingAccount;
       if (existingUser) {
@@ -57,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
       }
 
-      if (!existingAccount) {
+      if (existingUser && !existingAccount) {
         await prisma.account.create({
           data: {
             userId: existingUser!.id,

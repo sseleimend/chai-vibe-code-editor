@@ -1,3 +1,9 @@
+import UserButton from "@/modules/auth/components/user-button";
+
 export default function Home() {
-  return <h1>Hello World!</h1>;
+  return (
+    <div>
+      <UserButton />
+    </div>
+  );
 }

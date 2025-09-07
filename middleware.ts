@@ -1,10 +1,6 @@
-import NextAuth from "next-auth";
-
 import { DEFAULT_LOGIN_REDIRECT, publicRoutes, authRoutes } from "@/routes";
-import authConfig from "@/auth.config";
+import { auth } from "@/auth";
 import { NextResponse } from "next/server";
-
-const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const { nextUrl } = req;
@@ -13,21 +9,21 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-  if (isLoggedIn && isAuthRoute) {
+  if (isAuthRoute && isLoggedIn) {
     return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
   }
 
+  if (isAuthRoute) {
+    return null;
+  }
+
   if (!isLoggedIn && !isPublicRoute) {
-    const signInUrl = new URL("/auth/sign-in", nextUrl);
-    return NextResponse.redirect(signInUrl);
+    return NextResponse.redirect(new URL("/auth/sign-in", nextUrl));
   }
 
   return null;
 });
 
 export const config = {
-  matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
-  ],
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };

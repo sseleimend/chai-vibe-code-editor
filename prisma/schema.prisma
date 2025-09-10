@@ -20,14 +20,15 @@ enum UserRole {
 }
 
 model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  name      String?
-  email     String    @unique
-  image     String?
-  accounts  Account[]
-  role      UserRole  @default(USER)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  name       String?
+  email      String       @unique
+  image      String?
+  accounts   Account[]
+  role       UserRole     @default(USER)
+  playground Playground[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model Account {
@@ -47,4 +48,24 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@index([userId])
+}
+
+enum Templates {
+  REACT
+  VUE
+  ANGULAR
+  NEXT
+  EXPRESS
+  HONO
+}
+
+model Playground {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  template    Templates @default(REACT)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String    @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

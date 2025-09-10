@@ -84,7 +84,7 @@ export default function ProjectTable({
     description: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [favoutrie, setFavourite] = useState(false);
+  const [favorite, setFavorite] = useState(false);
 
   const handleEditClick = (project: Project) => {
     //    Write your logic here

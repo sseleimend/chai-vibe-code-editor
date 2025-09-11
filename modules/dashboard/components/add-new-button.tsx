@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import TemplateSelectionModal from "./template-selection-modal";
 
 const AddNewButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,6 +48,15 @@ const AddNewButton = () => {
           />
         </div>
       </div>
+      <TemplateSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={(data: {
+          title: string;
+          template: "REACT" | "ANGULAR" | "VUE" | "NEXT" | "EXPRESS" | "HONO";
+          description?: string;
+        }) => setIsModalOpen(false)}
+      />
     </>
   );
 };

@@ -5,9 +5,37 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import TemplateSelectionModal from "./template-selection-modal";
+import { useRouter } from "next/navigation";
+import { createPlayground } from "../actions";
+import { toast } from "sonner";
 
 const AddNewButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    title: string;
+    template: "REACT" | "ANGULAR" | "VUE" | "NEXT" | "EXPRESS" | "HONO";
+    description?: string;
+  } | null>(null);
+  const router = useRouter();
+
+  const handleSubmit = async (data: {
+    title: string;
+    template: "REACT" | "ANGULAR" | "VUE" | "NEXT" | "EXPRESS" | "HONO";
+    description?: string;
+  }) => {
+    setSelectedTemplate(data);
+    setIsModalOpen(false);
+
+    try {
+      const res = await createPlayground(data);
+      toast.success("Playground created successfully!");
+      setIsModalOpen(false);
+      router.push(`/playground/${res.id}`);
+    } catch (error) {
+      toast.error("Failed to create playground");
+      console.error("Error creating playground:", error);
+    }
+  };
 
   return (
     <>
@@ -51,11 +79,7 @@ const AddNewButton = () => {
       <TemplateSelectionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={(data: {
-          title: string;
-          template: "REACT" | "ANGULAR" | "VUE" | "NEXT" | "EXPRESS" | "HONO";
-          description?: string;
-        }) => setIsModalOpen(false)}
+        onSubmit={handleSubmit}
       />
     </>
   );

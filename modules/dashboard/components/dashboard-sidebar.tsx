@@ -36,7 +36,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import path from "path";
 
 interface Playground {
   id: string;

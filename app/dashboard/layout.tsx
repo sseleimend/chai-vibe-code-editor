@@ -21,7 +21,7 @@ export default async function DashboardLayout({
   const formattedPlaygrounds = playgrounds.map((playground) => ({
     ...playground,
     icon: technologyIconMap[playground.template] ?? "Code2",
-    starred: false,
+    starred: playground.starMark?.[0]?.isMarked || false,
   }));
 
   return (

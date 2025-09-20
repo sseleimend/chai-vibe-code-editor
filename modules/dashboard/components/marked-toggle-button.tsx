@@ -50,7 +50,7 @@ const MarkedToggleButton = forwardRef<
       className={`flex items-center justify-start w-full px-2 py-1.5 text-sm rounded-md cursor-pointer ${className}`}
       {...props}
     >
-      {isMarked ? (
+      {!isMarked ? (
         <StarIcon size={16} className="text-red-500 mr-2" />
       ) : (
         <StarOffIcon size={16} className="text-gray-500 mr-2" />

@@ -183,7 +183,6 @@ const ToggleAI: React.FC<ToggleAIProps> = ({
       <AIChatSidePanel
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
-        theme="dark"
       />
     </>
   );

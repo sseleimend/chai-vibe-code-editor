@@ -247,15 +247,19 @@ export async function saveTemplateStructureToJson(
   options?: ScanOptions
 ): Promise<void> {
   try {
+    console.log("saving template structure to JSON...");
     // Scan the template directory
     const templateStructure = await scanTemplateDirectory(
       templatePath,
       options
     );
+    console.log(templateStructure);
 
     // Ensure the output directory exists
     const outputDir = path.dirname(outputPath);
+    console.log(outputDir);
     await fs.promises.mkdir(outputDir, { recursive: true });
+    console.log(`Output directory ensured: ${outputDir}`);
 
     // Write the JSON file
     await fs.promises.writeFile(
@@ -265,6 +269,7 @@ export async function saveTemplateStructureToJson(
     );
     console.log(`Template structure saved to ${outputPath}`);
   } catch (error) {
+    console.log("error: ", error);
     throw new Error(
       `Error saving template structure: ${(error as Error).message}`
     );

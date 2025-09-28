@@ -252,8 +252,9 @@ export async function saveTemplateStructureToJson(
       templatePath,
       options
     );
-    
+
     // Ensure the output directory exists
+    console.log(outputPath);
     const outputDir = path.dirname(outputPath);
     console.log(outputDir);
     await fs.promises.mkdir(outputDir, { recursive: true });

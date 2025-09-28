@@ -62,7 +62,8 @@ export async function GET(
       },
       { status: 200 }
     );
-  } catch {
+  } catch (error) {
+    console.log(error);
     return Response.json("Failed to read template", { status: 500 });
   }
 }

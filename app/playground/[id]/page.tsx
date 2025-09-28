@@ -24,6 +24,7 @@ import LoadingStep from "@/modules/playground/components/loader";
 import PlaygroundEditor from "@/modules/playground/components/playground-editor";
 import { TemplateFileTree } from "@/modules/playground/components/playground-explorer";
 import ToggleAI from "@/modules/playground/components/toggle-ai";
+import { useAISuggestion } from "@/modules/playground/hooks/useAISuggestion";
 import { useFileExplorer } from "@/modules/playground/hooks/useFileExplorer";
 import { usePlayground } from "@/modules/playground/hooks/usePlayground";
 import { findFilePath } from "@/modules/playground/lib";
@@ -33,6 +34,7 @@ import {
 } from "@/modules/playground/lib/path-to-json";
 import WebContainerPreview from "@/modules/webcontainers/components/webcontainer-preview";
 import { useWebContainer } from "@/modules/webcontainers/hooks/useWebContainer";
+import { Monaco } from "@monaco-editor/react";
 import { TooltipContent } from "@radix-ui/react-tooltip";
 import {
   AlertCircle,
@@ -43,6 +45,7 @@ import {
   Settings,
   X,
 } from "lucide-react";
+import { editor } from "monaco-editor";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -53,6 +56,8 @@ function Page() {
 
   const { playgroundData, templateData, isLoading, error, saveTemplateData } =
     usePlayground(id);
+
+  const aiSuggestions = useAISuggestion();
 
   const {
     selectedFileId,
@@ -411,9 +416,9 @@ function Page() {
                   <TooltipContent>Save All (Ctrl + Shift + S)</TooltipContent>
                 </Tooltip>
                 <ToggleAI
-                  isEnabled={true}
-                  onToggle={() => {}}
-                  suggestionLoading={false}
+                  isEnabled={aiSuggestions.isEnabled}
+                  onToggle={aiSuggestions.toggleEnabled}
+                  suggestionLoading={aiSuggestions.isLoading}
                 />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -502,6 +507,20 @@ function Page() {
                           if (!selectedFileId) return;
                           updateFileContent(selectedFileId, value);
                         }}
+                        suggestion={aiSuggestions.suggestion}
+                        suggestionLoading={aiSuggestions.isLoading}
+                        suggestionPosition={aiSuggestions.position}
+                        onAcceptSuggestion={(
+                          editor: editor.IStandaloneCodeEditor,
+                          monaco: Monaco
+                        ) => aiSuggestions.acceptSuggestion(editor, monaco)}
+                        onRejectSuggestion={(
+                          editor: editor.IStandaloneCodeEditor
+                        ) => aiSuggestions.rejectSuggestion(editor)}
+                        onTriggerSuggestion={(
+                          type: string,
+                          editor: editor.IStandaloneCodeEditor
+                        ) => aiSuggestions.fetchSuggestion(type, editor)}
                       />
                     </ResizablePanel>
 

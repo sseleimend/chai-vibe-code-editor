@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { Ollama } from "ollama";
 
 interface CodeSuggestionRequest {
   fileContent: string;
@@ -217,23 +218,26 @@ Generate suggestion:`;
 
 async function generateSuggestion(prompt: string): Promise<string> {
   try {
-    const response = await fetch("http://localhost:11434/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "codellama:latest",
-        prompt,
-        stream: false,
-        option: { temperature: 0.7, max_new_tokens: 300 },
-      }),
+    const ollama = new Ollama({
+      host: "https://ollama.com",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OLLAMA_API_KEY}`,
+      },
     });
 
-    if (!response.ok) {
-      throw new Error(`LLM API error: ${response.statusText}`);
+    const response = await ollama.chat({
+      model: "gpt-oss:20b-cloud",
+      messages: [{ role: "user", content: prompt }],
+      options: { temperature: 0.7 },
+      stream: false,
+    });
+
+    if (!response?.message?.content) {
+      throw new Error(`LLM API error`);
     }
 
-    const data = await response.json();
-    let suggestion = data.response as string;
+    let suggestion = response.message.content;
     if (suggestion.includes("```")) {
       const codeMatch = suggestion.match(/```[\w]*\n?([\s\S]*?)```/);
       suggestion = codeMatch ? codeMatch[1].trim() : suggestion;

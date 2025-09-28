@@ -61,7 +61,7 @@ export const useAISuggestion = (): UseAISuggestionReturn => {
               suggestionType: type,
             };
 
-            const res = await fetch("/api/code-suggestions", {
+            const res = await fetch("/api/code-completion", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),

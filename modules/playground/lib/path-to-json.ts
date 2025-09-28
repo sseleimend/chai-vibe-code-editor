@@ -247,14 +247,12 @@ export async function saveTemplateStructureToJson(
   options?: ScanOptions
 ): Promise<void> {
   try {
-    console.log("saving template structure to JSON...");
     // Scan the template directory
     const templateStructure = await scanTemplateDirectory(
       templatePath,
       options
     );
-    console.log(templateStructure);
-
+    
     // Ensure the output directory exists
     const outputDir = path.dirname(outputPath);
     console.log(outputDir);
